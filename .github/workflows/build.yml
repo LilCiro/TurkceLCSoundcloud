@@ -1,11 +1,8 @@
 name: Build
 
 on:
-  push:
-    branches: ["*"]
-  pull_request:
-    branches: ["*"]
-    
+  workflow_dispatch:
+
 jobs:
   build-rootless:
     runs-on: macos-13
@@ -13,11 +10,13 @@ jobs:
       - uses: maxim-lobanov/setup-xcode@v1
         with:
           xcode-version: latest-stable
-            
-      - uses: actions/checkout@main
+          
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
       - name: Checkout theos/theos
-        uses: actions/checkout@main
+        uses: actions/checkout@v4
         with:
           repository: theos/theos
           ref: master
@@ -25,7 +24,7 @@ jobs:
           path: theos
 
       - name: Checkout SDKs
-        uses: actions/checkout@main
+        uses: actions/checkout@v4
         with:
           repository: xybp888/iOS-SDKs
           ref: master
@@ -39,7 +38,7 @@ jobs:
         run: THEOS=theos gmake clean package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless
 
       - name: Upload a Build Artifact (rootless)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: packages iphoneos-arm64 (rootless)
           path: packages/*_iphoneos-arm64.deb
@@ -50,11 +49,13 @@ jobs:
       - uses: maxim-lobanov/setup-xcode@v1
         with:
           xcode-version: '14.2'
-            
-      - uses: actions/checkout@main
+          
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
       - name: Checkout theos/theos
-        uses: actions/checkout@main
+        uses: actions/checkout@v4
         with:
           repository: theos/theos
           ref: master
@@ -62,7 +63,7 @@ jobs:
           path: theos
 
       - name: Checkout SDKs
-        uses: actions/checkout@main
+        uses: actions/checkout@v4
         with:
           repository: xybp888/iOS-SDKs
           ref: master
@@ -76,7 +77,7 @@ jobs:
         run: THEOS=theos gmake clean package FINALPACKAGE=1
 
       - name: Upload a Build Artifact (rootful)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: packages iphoneos-arm (rootful)
           path: packages/*_iphoneos-arm.deb
